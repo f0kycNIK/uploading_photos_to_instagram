@@ -29,21 +29,41 @@ def fetch_photo_hubble (url):
     headers = {}
     response = requests.request("GET", url, headers=headers, data=payload)
     response.raise_for_status()
-    pprint(response.json())
-    # pprint(response.text.encode('utf8'))
+    # pprint(response.json())
     fly_lib = response.json()
     name =  fly_lib[0]['id']
-    print (name)
-    collection_url = f'https://hubblesite.org/api/v3/image/{name}'
-    print(collection_url)
+    # print (name)
+    collection_url = f' http://hubblesite.org/api/v3/image/{name}'
+    # print(collection_url)
     response = requests.request("GET", collection_url, headers=headers, data=payload)
     response.raise_for_status()
-    image_url1 = fly_lib[0]['file_url']
-    image_url2 = fly_lib[1]['file_url']
     pprint(response.json())
-    # fly_lib = response.json()
-    # url_images = fly_lib[0]['name']
-    print(image_url1, image_url2)
+    fly_lib2 = response.json()
+    images = fly_lib2['image_files']
+    lst = []
+    for image in images:
+        lst.append(image['file_url'])
+    image_url1 = fly_lib2['image_files'][0]['file_url']
+    # image_url2 = fly_lib2['image_files'][1]['file_url']
+    # print(image_url1, '\n', image_url2)
+    print(lst)
+    return lst
+
+def save_picture_any_format (urls):
+    for url in urls:
+        payload = {}
+        headers = {}
+        print(url)
+        lst = url.split('.')
+        image_format = lst[-1]
+        filename = f'hubble_images/hubble.{image_format}'
+        print(filename)
+        mm = 'https:' + url
+        print(mm)
+        response = requests.get(mm, headers=headers, data=payload)
+        response.raise_for_status()
+        with open(filename, 'wb') as file:
+            file.write(response.content)
 
 if __name__ == '__main__':
     Path("images").mkdir(parents=True, exist_ok=True)
@@ -52,7 +72,9 @@ if __name__ == '__main__':
     hubble_url = 'https://hubblesite.org/api/v3/images/news'
     url_images = fetch_spacex_last_launch(spacex_url)
     download_imges(url_images)
-    fetch_photo_hubble(hubble_url)
+    image_hubble_url = fetch_photo_hubble(hubble_url)
+    Path("hubble_images").mkdir(parents=True, exist_ok=True)
+    save_picture_any_format(image_hubble_url)
 
 
 
