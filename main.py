@@ -8,7 +8,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 sys.path.append(os.path.join(sys.path[0], "../../"))
-from instabot import Bot  # noqa: E402
+from instabot import Bot
 
 load_dotenv()
 
@@ -29,7 +29,7 @@ def fetch_spacex_last_launch(url):
     headers = {}
     response = requests.request("GET", url, headers=headers, data=payload)
     fly_lib = response.json()
-    url_images = fly_lib[13]['links']['flickr']['original']
+    url_images = fly_lib[12]['links']['flickr']['original']
     return url_images
 
 
@@ -39,7 +39,7 @@ def fetch_photo_hubble(url):
     response = requests.request("GET", url, headers=headers, data=payload)
     response.raise_for_status()
     fly_lib = response.json()
-    image_id = fly_lib[0]['id']
+    image_id = fly_lib[1]['id']
     return image_id
 
 
@@ -80,7 +80,7 @@ def resiz_picture(folder_list):
                 if image_format == 'jpg':
                     new_image = Image.open(f'{dir}/{image}')
                     new_image = new_image.resize((1080, 1080))
-                    new_image.save(f'instagram_images/{number_image}-{lst[0]}-resize.jpg', format='JPEG')
+                    new_image.save(f'instagram_images/{number_image}-{lst[0]}-resize2.jpg', format='JPEG')
                     number_image += 1
 
 
@@ -138,7 +138,6 @@ def publication_photo_instagram (login_instagram, password_instagram):
 
 if __name__ == '__main__':
     spacex_url = 'https://api.spacexdata.com/v4/launches'
-    # spacex_url = 'https://api.spacexdata.com/v4/launches/latest'
     Path("spacex_images").mkdir(parents=True, exist_ok=True)
     url_images = fetch_spacex_last_launch(spacex_url)
     download_spacex_imges(url_images)
