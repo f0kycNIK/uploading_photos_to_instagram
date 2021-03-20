@@ -17,9 +17,8 @@ ___
 
 В файле `.env` ключи записываются следующим образом:
 
-`LOGIN_INSTAGRAM = [_login_]`
-
-`PASSWORD_INSTAGRAM = [_password_]`
+>`LOGIN_INSTAGRAM = [_login_]
+> PASSWORD_INSTAGRAM = [_password_]`
  
 
 Python3 должен быть уже установлен. Затем используйте pip (или pip3, есть есть 
