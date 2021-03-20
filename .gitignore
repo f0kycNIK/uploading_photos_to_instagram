@@ -7,3 +7,8 @@ ENV/
 env.bak/
 venv.bak/
 /.idea
+/hubble_images
+/instagram_images
+/spacex_images
+/config
+*.txt
