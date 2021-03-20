@@ -11,14 +11,16 @@ ___
 (_login_ и _password_ соответсвенно) в [Instagram.com](https://www.instagram.com)
 и подтягивают из файла .env
 
-`login_instagram = os.getenv('LOGIN_INSTAGRAM')`
-
-`password_instagram = os.getenv('PASSWORD_INSTAGRAM')`
-
+```python
+login_instagram = os.getenv('LOGIN_INSTAGRAM')
+password_instagram = os.getenv('PASSWORD_INSTAGRAM')
+```
 В файле `.env` ключи записываются следующим образом:
 
->`LOGIN_INSTAGRAM = [_login_]
-> PASSWORD_INSTAGRAM = [_password_]`
+```python
+LOGIN_INSTAGRAM = [login]
+PASSWORD_INSTAGRAM = [_password]
+```
  
 
 Python3 должен быть уже установлен. Затем используйте pip (или pip3, есть есть 
