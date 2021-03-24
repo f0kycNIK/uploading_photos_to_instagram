@@ -1,5 +1,5 @@
 # Космический Инстаграм
-___
+
 Данная программа производит загрузку фотографий в Instargan из:
 1. <https://api.spacexdata.com/v4/launches> 
 2. <https://hubblesite.org/api/v3/images>
@@ -36,5 +36,5 @@ Python3 должен быть уже установлен. Затем испол
 
 `pip install -r requirements.txt`
 
-##Цель проекта
+## Цель проекта
 Код написан в образовательных целях на онлайн-курсе для веб-разработчиков [dvmn.org.](https://dvmn.org/modules/)
