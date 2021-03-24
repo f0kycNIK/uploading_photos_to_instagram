@@ -5,7 +5,9 @@ ___
 2. <https://hubblesite.org/api/v3/images>
 
 ## Как установить
-[TODO: объясните пользователю, откуда брать ключи, куда их класть и как они выглядят]
+Программа запускается командой:
+
+`./python main.py`
 
 Переменые `login_instagra` и `password_instagram` хранят данные для авторизации 
 (_login_ и _password_ соответсвенно) в [Instagram.com](https://www.instagram.com)

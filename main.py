@@ -6,92 +6,88 @@ import requests
 from PIL import Image
 from pathlib import Path
 from dotenv import load_dotenv
-from pprint import pprint
+from io import open
 
-# sys.path.append(os.path.join(sys.path[0], "../../"))
+
+sys.path.append(os.path.join(sys.path[0], "../../"))
 from instabot import Bot
-
-
-
-def main():
-    login_instagram = os.getenv('LOGIN_INSTAGRAM')
-    password_instagram = os.getenv('PASSWORD_INSTAGRAM')
-    pass
-
-
-def download_spacex_imges(images):
-    for number_image, image in enumerate(images):
-        filename = f'spacex_images/spacex{number_image}.jpg'
-        response = requests.get(image)
-        response.raise_for_status()
-        with open(filename, 'wb') as file:
-            file.write(response.content)
 
 
 def fetch_spacex_last_launch(url):
     response = requests.get(url)
     fly_lib = response.json()
-    pprint(fly_lib)
     images_url = []
-    # print(bool(images_url))
+
+    #search last run with photo
     flight_number = -1
     while bool(images_url) != True:
         images_url = fly_lib[flight_number]['links']['flickr']['original']
-        # print(bool(images_url))
         flight_number -= 1
-        print(flight_number)
     return images_url
 
 
-def fetch_photo_hubble(url):
+def fetch_news_id_hubble(url):
     response = requests.get(url)
     response.raise_for_status()
     fly_lib = response.json()
-    pprint(fly_lib)
-    image_id = fly_lib[1]['id']
-    return image_id
+    news_id = fly_lib[1]['id']
+    return news_id
 
 
-def creating_hubbl_list_url_image(image_id):
-    collection_url = f' http://hubblesite.org/api/v3/image/{image_id}'
+def get_url_image_hubble(news_id):
+    collection_url = f' http://hubblesite.org/api/v3/image/{news_id}'
     response = requests.get(collection_url)
     response.raise_for_status()
     fly_lib = response.json()
-    pprint(fly_lib)
-    images = fly_lib['image_files']
-    lst = []
-    for image in images:
-        lst.append(image['file_url'])
-    print(lst)
-    return (lst)
+    url_image = fly_lib['image_files'][0]['file_url']
+    return (url_image)
 
 
-def save_picture_any_format(list_images_url, image_id):
-    for image_url in list_images_url:
-        lst = image_url.split('.')
-        image_format = lst[-1]
-        filename = f'hubble_images/{image_id}.{image_format}'
-        modify_image_url = 'https:' + image_url
-        response = requests.get(modify_image_url, verify=False)
-        response.raise_for_status()
-        with open(filename, 'wb') as file:
-            file.write(response.content)
+def change_url(url_image, protocol):
+    if protocol != 'https:':
+        new_url_image = 'https:' + url_image
+    else:
+        new_url_image = url_image
+    return new_url_image
 
-def resiz_picture(folder_list):
+
+def safe_image (url_image, folder, name_image, number_image):
+    protocol_lst = url_image.split('//')
+    protocol = protocol_lst[0]
+    url_image = change_url(url_image, protocol)
+    lst = url_image.split('.')
+    image_format = lst[-1]
+    filename = f'{folder}/{name_image}-{number_image}.{image_format}'
+    response = requests.get(url_image, verify=False)
+    response.raise_for_status()
+    with open(filename, 'wb') as file:
+        file.write(response.content)
+
+
+def download_image(urls_image, folder, name_image):
+    if type (urls_image) == str:
+        number_image = 0
+        safe_image(urls_image, folder, name_image, number_image)
+    else:
+        for number_image, url_image in enumerate(urls_image):
+            safe_image(url_image, folder, name_image, number_image)
+
+
+def resiz_image(folder_list):
     image_number = 1
     for path in folder_list:
         for dir,folder,files in os.walk(path):
             for image in files:
                 lst = image.split('.')
-                image_format = lst[-1]
-                if image_format == 'jpg':
-                    new_image = Image.open(f'{dir}/{image}')
-                    new_image = new_image.resize((1080, 1080))
-                    new_image.save(f'instagram_images/{image_number}-{lst[0]}-resize.jpg', format='JPEG')
-                    image_number += 1
+                new_image = Image.open(f'{dir}/{image}')
+                new_image = new_image.resize((1080, 1080))
+                new_image.save(f'instagram_images/{image_number}-{lst[0]}.jpg',
+                               format='JPEG')
+                image_number += 1
 
 
-def check_pic_list ():
+def check_pic_list():
+    posted_pic_list = []
     try:
         with open("pics.txt", "r", encoding="utf8") as f:
             posted_pic_list = f.read().splitlines()
@@ -99,13 +95,24 @@ def check_pic_list ():
         posted_pic_list = []
     return posted_pic_list
 
-def check_file_name (description_file):
+
+def check_file_name(description_file, pic_name):
     if os.path.isfile(description_file):
         with open(description_file, "r") as file:
             caption = file.read()
     else:
         caption = pic_name.replace("-", " ")
     return caption
+
+
+def create_pic_name(pic,  folder_path):
+    pic_name = pic[:-4].split("-")
+    pic_name = "-".join(pic_name[1:])
+
+    print("upload: " + pic_name)
+
+    description_file = folder_path + "/" + pic_name + ".txt"
+    return description_file, pic_name
 
 
 def publication_photo_instagram (login_instagram, password_instagram):
@@ -125,16 +132,11 @@ def publication_photo_instagram (login_instagram, password_instagram):
                 if pic in posted_pic_list:
                     continue
 
-                pic_name = pic[:-4].split("-")
-                pic_name = "-".join(pic_name[1:])
-
-                print("upload: " + pic_name)
-
-                description_file = folder_path + "/" + pic_name + ".txt"
-
-                caption = check_file_name(description_file)
+                [description_file, pic_name] = create_pic_name(pic, folder_path)
+                caption = check_file_name(description_file, pic_name)
 
                 bot.upload_photo(pic, caption=caption)
+
                 if bot.api.last_response.status_code != 200:
                     print(bot.api.last_response)
                     break
@@ -151,24 +153,28 @@ def publication_photo_instagram (login_instagram, password_instagram):
         time.sleep(60)
 
 
-
 if __name__ == '__main__':
     load_dotenv()
-    main()
+
+    login_instagram = os.getenv('LOGIN_INSTAGRAM')
+    password_instagram = os.getenv('PASSWORD_INSTAGRAM')
 
     spacex_url = 'https://api.spacexdata.com/v4/launches'
+    hubble_url = 'https://hubblesite.org/api/v3/images'
+    folder_list = ['hubble_images', 'spacex_images']
+    image_name_list = ['hubble', 'spacex']
+
     Path("spacex_images").mkdir(parents=True, exist_ok=True)
-    url_images = fetch_spacex_last_launch(spacex_url)
-    download_spacex_imges(url_images)
+    url_images_spacex = fetch_spacex_last_launch(spacex_url)
+    download_image(url_images_spacex, folder_list[1], image_name_list[1])
 
-    hubble_url = 'https://hubblesite.org/api/v3/images/?page=all&collection_name=spacecraft'
+
     Path("hubble_images").mkdir(parents=True, exist_ok=True)
-    hubble_image_id = fetch_photo_hubble(hubble_url)
-
-    lst = creating_hubbl_list_url_image(hubble_image_id)
-    save_picture_any_format(lst, hubble_image_id)
+    news_id_hubble = fetch_news_id_hubble(hubble_url)
+    url_image_hubble = get_url_image_hubble(news_id_hubble)
+    download_image(url_image_hubble, folder_list[0], image_name_list[0])
 
     Path("instagram_images").mkdir(parents=True, exist_ok=True)
-    folder_list = ['hubble_images', 'spacex_images']
-    resiz_picture(folder_list)
-    # publication_photo_instagram(login_instagram, password_instagram)
+    resiz_image(folder_list)
+
+    publication_photo_instagram(login_instagram, password_instagram)
