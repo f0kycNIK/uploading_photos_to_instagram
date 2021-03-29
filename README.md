@@ -7,7 +7,9 @@
 ## Как установить
 Программа запускается командой:
 
-`./python main.py`
+```python
+./python main.py
+```
 
 Переменые `login_instagra` и `password_instagram` хранят данные для авторизации 
 (_login_ и _password_ соответсвенно) в [Instagram.com](https://www.instagram.com)
@@ -34,7 +36,9 @@ PASSWORD_INSTAGRAM=[password]
 Python3 должен быть уже установлен. Затем используйте pip (или pip3, если есть 
 конфликт с Python3) для установки зависимостей:
 
-`pip install -r requirements.txt`
+```python
+pip install -r requirements.txt
+```
 
 ## Цель проекта
 Код написан в образовательных целях на онлайн-курсе для веб-разработчиков [dvmn.org.](https://dvmn.org/modules/)
