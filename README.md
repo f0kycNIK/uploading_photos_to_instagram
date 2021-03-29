@@ -26,8 +26,8 @@ password_instagram = os.getenv('PASSWORD_INSTAGRAM')
 В файле `.env` ключи записываются следующим образом:
 
 ```python
-LOGIN_INSTAGRAM = [login]
-PASSWORD_INSTAGRAM = [password]
+LOGIN_INSTAGRAM=[login]
+PASSWORD_INSTAGRAM=[password]
 ```
  
 
