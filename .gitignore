@@ -12,3 +12,4 @@ venv.bak/
 /spacex_images
 /config
 *.txt
+!requirements.txt
