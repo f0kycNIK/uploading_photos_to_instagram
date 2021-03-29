@@ -5,11 +5,6 @@
 2. <https://hubblesite.org/api/v3/images>
 
 ## Как установить
-Программа запускается командой:
-
-```python
-./python main.py
-```
 
 Переменые `login_instagra` и `password_instagram` хранят данные для авторизации 
 (_login_ и _password_ соответсвенно) в [Instagram.com](https://www.instagram.com)
@@ -38,6 +33,11 @@ Python3 должен быть уже установлен. Затем испол
 
 ```python
 pip install -r requirements.txt
+```
+Программа запускается командой:
+
+```python
+./python main.py
 ```
 
 ## Цель проекта
