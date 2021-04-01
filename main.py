@@ -72,7 +72,7 @@ def download_image(urls_image, folder, name_image):
             safe_image(url_image, folder, name_image, number_image)
 
 
-def resiz_image(folder_list):
+def resiz_image(folder_list, folder_name):
     image_number = 1
     for path in folder_list:
         for dir,folder,files in os.walk(path):
@@ -80,13 +80,12 @@ def resiz_image(folder_list):
                 lst = image.split('.')
                 new_image = Image.open(f'{dir}/{image}')
                 new_image = new_image.resize((1080, 1080))
-                new_image.save(f'instagram_images/{image_number}-{lst[0]}.jpg',
+                new_image.save(f'{folder_name}/{image_number}-{lst[0]}.jpg',
                                format='JPEG')
                 image_number += 1
 
 
 def check_pic_list():
-    # posted_pic_list = []
     try:
         with open("pics.txt", "r", encoding="utf8") as f:
             posted_pic_list = f.read().splitlines()
@@ -114,7 +113,7 @@ def create_pic_name(pic,  folder_path):
     return description_file, pic_name
 
 
-def publication_photo_instagram (login_instagram, password_instagram):
+def publication_photo_instagram (login_instagram, password_instagram, folder_name):
     posted_pic_list = check_pic_list()
 
     # timeout = 24 * 60 * 60  # pics will be posted every 24 hours
@@ -123,7 +122,7 @@ def publication_photo_instagram (login_instagram, password_instagram):
     bot = Bot()
     bot.login(username=login_instagram, password=password_instagram, use_cookie=False)
     while True:
-        folder_path = "instagram_images"
+        folder_path = folder_name
         pics = glob(folder_path + "/*.jpg")
         pics = sorted(pics)
         try:
@@ -159,20 +158,23 @@ if __name__ == '__main__':
 
     spacex_url = 'https://api.spacexdata.com/v4/launches'
     hubble_url = 'https://hubblesite.org/api/v3/images'
-    folder_list = ['hubble_images', 'spacex_images']
-    image_name_list = ['hubble', 'spacex']
+    hubble_folder = 'spacex_images'
+    spacex_folder = 'hubble_images'
+    instagram_folder = 'instagram_images'
+    image_name_for_hubble = 'hubble'
+    image_name_for_spacex = 'spacex'
 
     Path("spacex_images").mkdir(parents=True, exist_ok=True)
     url_images_spacex = fetch_spacex_last_launch(spacex_url)
-    download_image(url_images_spacex, folder_list[1], image_name_list[1])
+    download_image(url_images_spacex, spacex_folder, image_name_for_spacex)
 
 
     Path("hubble_images").mkdir(parents=True, exist_ok=True)
     news_id_hubble = fetch_news_id_hubble(hubble_url)
     url_image_hubble = get_url_image_hubble(news_id_hubble)
-    download_image(url_image_hubble, folder_list[0], image_name_list[0])
+    download_image(url_image_hubble, hubble_folder, image_name_for_hubble)
 
     Path("instagram_images").mkdir(parents=True, exist_ok=True)
-    resiz_image(folder_list)
+    resiz_image(folder_list, instagram_folder)
 
-    publication_photo_instagram(login_instagram, password_instagram)
+    publication_photo_instagram(login_instagram, password_instagram, instagram_folder)
