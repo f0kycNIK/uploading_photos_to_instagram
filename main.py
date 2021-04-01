@@ -1,7 +1,6 @@
 import os
 import os.path
 from glob import glob
-import sys
 import time
 import requests
 from PIL import Image
@@ -10,7 +9,6 @@ from dotenv import load_dotenv
 from io import open
 
 
-# sys.path.append(os.path.join(sys.path[0], "../../"))
 from instabot import Bot
 
 
