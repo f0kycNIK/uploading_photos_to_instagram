@@ -51,11 +51,11 @@ def change_url(url_image, protocol):
 
 
 def safe_image (url_image, folder, name_image, number_image):
-    protocol_lst = url_image.split('//')
-    protocol = protocol_lst[0]
+    protocols = url_image.split('//')
+    protocol = protocols[0]
     url_image = change_url(url_image, protocol)
-    lst = url_image.split('.')
-    image_format = lst[-1]
+    image = url_image.split('.')
+    image_format = image[-1]
     filename = f'{folder}/{name_image}-{number_image}.{image_format}'
     response = requests.get(url_image, verify=False)
     response.raise_for_status()
@@ -72,15 +72,15 @@ def download_image(urls_image, folder, name_image):
             safe_image(url_image, folder, name_image, number_image)
 
 
-def resiz_image(folder_list, folder_name):
+def resiz_image(folders, folder_name):
     image_number = 1
-    for path in folder_list:
+    for path in folders:
         for dir,folder,files in os.walk(path):
             for image in files:
-                lst = image.split('.')
+                image_name = image.split('.')
                 new_image = Image.open(f'{dir}/{image}')
                 new_image = new_image.resize((1080, 1080))
-                new_image.save(f'{folder_name}/{image_number}-{lst[0]}.jpg',
+                new_image.save(f'{folder_name}/{image_number}-{image_name[0]}.jpg',
                                format='JPEG')
                 image_number += 1
 
@@ -88,10 +88,10 @@ def resiz_image(folder_list, folder_name):
 def check_pic_list():
     try:
         with open("pics.txt", "r", encoding="utf8") as f:
-            posted_pic_list = f.read().splitlines()
+            posted_pics = f.read().splitlines()
     except Exception:
-        posted_pic_list = []
-    return posted_pic_list
+        posted_pics = []
+    return posted_pics
 
 
 def check_file_name(description_file, pic_name):
@@ -114,7 +114,7 @@ def create_pic_name(pic,  folder_path):
 
 
 def publication_photo_instagram (login_instagram, password_instagram, folder_name):
-    posted_pic_list = check_pic_list()
+    posted_pics = check_pic_list()
 
     # timeout = 24 * 60 * 60  # pics will be posted every 24 hours
     timeout = 5
@@ -127,7 +127,7 @@ def publication_photo_instagram (login_instagram, password_instagram, folder_nam
         pics = sorted(pics)
         try:
             for pic in pics:
-                if pic in posted_pic_list:
+                if pic in posted_pics:
                     continue
                 [description_file, pic_name] = create_pic_name(pic, folder_path)
                 caption = check_file_name(description_file, pic_name)
@@ -138,8 +138,8 @@ def publication_photo_instagram (login_instagram, password_instagram, folder_nam
                     print(bot.api.last_response)
                     break
 
-                if pic not in posted_pic_list:
-                    posted_pic_list.append(pic)
+                if pic not in posted_pics:
+                    posted_pics.append(pic)
                     with open("pics.txt", "a", encoding="utf8") as f:
                         f.write(pic + "\n")
 
@@ -175,6 +175,7 @@ if __name__ == '__main__':
     download_image(url_image_hubble, hubble_folder, image_name_for_hubble)
 
     Path("instagram_images").mkdir(parents=True, exist_ok=True)
-    resiz_image(folder_list, instagram_folder)
+    folders = [spacex_folder, hubble_folder]
+    resiz_image(folders, instagram_folder)
 
     publication_photo_instagram(login_instagram, password_instagram, instagram_folder)
