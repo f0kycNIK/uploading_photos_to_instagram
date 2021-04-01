@@ -54,8 +54,7 @@ def safe_image (url_image, folder, name_image, number_image):
     protocols = url_image.split('//')
     protocol = protocols[0]
     url_image = change_url(url_image, protocol)
-    image = url_image.split('.')
-    image_format = image[-1]
+    [root_url, image_format] = os.path.splitext(url_image)
     filename = f'{folder}/{name_image}-{number_image}.{image_format}'
     response = requests.get(url_image, verify=False)
     response.raise_for_status()
@@ -77,10 +76,10 @@ def resiz_image(folders, folder_name):
     for path in folders:
         for dir,folder,files in os.walk(path):
             for image in files:
-                image_name = image.split('.')
+                [image_name, image_format] = os.path.splitext(image)
                 new_image = Image.open(f'{dir}/{image}')
                 new_image = new_image.resize((1080, 1080))
-                new_image.save(f'{folder_name}/{image_number}-{image_name[0]}.jpg',
+                new_image.save(f'{folder_name}/{image_number}-{image_name}.jpg',
                                format='JPEG')
                 image_number += 1
 
@@ -158,23 +157,23 @@ if __name__ == '__main__':
 
     spacex_url = 'https://api.spacexdata.com/v4/launches'
     hubble_url = 'https://hubblesite.org/api/v3/images'
-    hubble_folder = 'spacex_images'
-    spacex_folder = 'hubble_images'
+    hubble_folder = 'hubble_images'
+    spacex_folder = 'spacex_images'
     instagram_folder = 'instagram_images'
     image_name_for_hubble = 'hubble'
     image_name_for_spacex = 'spacex'
 
-    Path("spacex_images").mkdir(parents=True, exist_ok=True)
+    Path(spacex_folder).mkdir(parents=True, exist_ok=True)
     url_images_spacex = fetch_spacex_last_launch(spacex_url)
     download_image(url_images_spacex, spacex_folder, image_name_for_spacex)
 
 
-    Path("hubble_images").mkdir(parents=True, exist_ok=True)
+    Path(hubble_folder).mkdir(parents=True, exist_ok=True)
     news_id_hubble = fetch_news_id_hubble(hubble_url)
     url_image_hubble = get_url_image_hubble(news_id_hubble)
     download_image(url_image_hubble, hubble_folder, image_name_for_hubble)
 
-    Path("instagram_images").mkdir(parents=True, exist_ok=True)
+    Path(instagram_folder).mkdir(parents=True, exist_ok=True)
     folders = [spacex_folder, hubble_folder]
     resiz_image(folders, instagram_folder)
 
