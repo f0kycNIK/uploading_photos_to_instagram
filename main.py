@@ -1,5 +1,6 @@
 import os
-import glob
+import os.path
+from glob import glob
 import sys
 import time
 import requests
@@ -9,7 +10,7 @@ from dotenv import load_dotenv
 from io import open
 
 
-sys.path.append(os.path.join(sys.path[0], "../../"))
+# sys.path.append(os.path.join(sys.path[0], "../../"))
 from instabot import Bot
 
 
@@ -87,7 +88,7 @@ def resiz_image(folder_list):
 
 
 def check_pic_list():
-    posted_pic_list = []
+    # posted_pic_list = []
     try:
         with open("pics.txt", "r", encoding="utf8") as f:
             posted_pic_list = f.read().splitlines()
@@ -122,16 +123,15 @@ def publication_photo_instagram (login_instagram, password_instagram):
     timeout = 5
 
     bot = Bot()
-    bot.login(username=login_instagram, password=password_instagram)
+    bot.login(username=login_instagram, password=password_instagram, use_cookie=False)
     while True:
-        folder_path = "./instagram_images"
-        pics = glob.glob(folder_path + "/*.jpg")
+        folder_path = "instagram_images"
+        pics = glob(folder_path + "/*.jpg")
         pics = sorted(pics)
         try:
             for pic in pics:
                 if pic in posted_pic_list:
                     continue
-
                 [description_file, pic_name] = create_pic_name(pic, folder_path)
                 caption = check_file_name(description_file, pic_name)
 
