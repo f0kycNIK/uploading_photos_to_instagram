@@ -43,10 +43,9 @@ def get_url_image_hubble(news_id):
 
 
 def change_url(url_image, protocol):
-    if protocol != 'https:':
-        new_url_image = 'https:' + url_image
-    else:
-        new_url_image = url_image
+    if not protocol != 'https:':
+        return url_image
+    new_url_image = 'https' + url_image
     return new_url_image
 
 
