@@ -17,7 +17,7 @@ def fetch_spacex_last_launch(url):
 
     # search last run with photo
     flight_number = -1
-    while bool(images_url) != True:
+    while not bool(images_url):
         images_url = fly_lib[flight_number]['links']['flickr']['original']
         flight_number -= 1
     return images_url
@@ -43,7 +43,7 @@ def get_hubble_image_url(news_id):
 def change_url(image_url, protocol):
     if not protocol != 'https:':
         return image_url
-    new_image_url = 'https' + image_url
+    new_image_url = 'https:' + image_url
     return new_image_url
 
 
