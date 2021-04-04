@@ -7,8 +7,6 @@ from PIL import Image
 from pathlib import Path
 from dotenv import load_dotenv
 from io import open
-
-
 from instabot import Bot
 
 
@@ -33,41 +31,41 @@ def fetch_news_id_hubble(url):
     return news_id
 
 
-def get_url_image_hubble(news_id):
+def get_hubble_image_url(news_id):
     collection_url = f' http://hubblesite.org/api/v3/image/{news_id}'
     response = requests.get(collection_url)
     response.raise_for_status()
     fly_lib = response.json()
-    url_image = fly_lib['image_files'][0]['file_url']
-    return (url_image)
+    image_url = fly_lib['image_files'][0]['file_url']
+    return (image_url)
 
 
-def change_url(url_image, protocol):
+def change_url(image_url, protocol):
     if not protocol != 'https:':
-        return url_image
-    new_url_image = 'https' + url_image
-    return new_url_image
+        return image_url
+    new_image_url = 'https' + image_url
+    return new_image_url
 
 
-def safe_image (url_image, folder, name_image, number_image):
-    protocols = url_image.split('//')
+def safe_image (image_url, folder, image_name, image_number):
+    protocols = image_url.split('//')
     protocol = protocols[0]
-    url_image = change_url(url_image, protocol)
-    [root_url, image_format] = os.path.splitext(url_image)
-    filename = f'{folder}/{name_image}-{number_image}.{image_format}'
-    response = requests.get(url_image, verify=False)
+    image_url = change_url(image_url, protocol)
+    [root_url, image_format] = os.path.splitext(image_url)
+    file_name = f'{folder}/{image_name}-{image_number}.{image_format}'
+    response = requests.get(image_url, verify=False)
     response.raise_for_status()
-    with open(filename, 'wb') as file:
+    with open(file_name, 'wb') as file:
         file.write(response.content)
 
 
-def download_image(urls_image, folder, name_image):
-    if type (urls_image) == str:
-        number_image = 0
-        safe_image(urls_image, folder, name_image, number_image)
+def download_image(image_urls, folder, image_name):
+    if type (image_urls) == str:
+        image_number = 0
+        safe_image(image_urls, folder, image_name, image_number)
     else:
-        for number_image, url_image in enumerate(urls_image):
-            safe_image(url_image, folder, name_image, number_image)
+        for image_number, image_url in enumerate(image_urls):
+            safe_image(image_url, folder, image_name, image_number)
 
 
 def resiz_image(folders, folder_name):
@@ -101,7 +99,7 @@ def check_file_name(description_file, pic_name):
     return caption
 
 
-def create_pic_name(pic,  folder_path):
+def create_pic_name(pic, folder_path):
     pic_name = pic[:-4].split("-")
     pic_name = "-".join(pic_name[1:])
 
@@ -111,14 +109,14 @@ def create_pic_name(pic,  folder_path):
     return description_file, pic_name
 
 
-def publication_photo_instagram (login_instagram, password_instagram, folder_name):
+def publication_photo_instagram (instagram_login, instagram_password, folder_name):
     posted_pics = check_pic_list()
 
     # timeout = 24 * 60 * 60  # pics will be posted every 24 hours
     timeout = 5
 
     bot = Bot()
-    bot.login(username=login_instagram, password=password_instagram, use_cookie=False)
+    bot.login(username=instagram_login, password=instagram_password, use_cookie=False)
     while True:
         folder_path = folder_name
         pics = glob(folder_path + "/*.jpg")
@@ -151,29 +149,29 @@ def publication_photo_instagram (login_instagram, password_instagram, folder_nam
 if __name__ == '__main__':
     load_dotenv()
 
-    login_instagram = os.getenv('LOGIN_INSTAGRAM')
-    password_instagram = os.getenv('PASSWORD_INSTAGRAM')
+    instagram_login = os.getenv('LOGIN_INSTAGRAM')
+    instagram_password = os.getenv('PASSWORD_INSTAGRAM')
 
     spacex_url = 'https://api.spacexdata.com/v4/launches'
     hubble_url = 'https://hubblesite.org/api/v3/images'
     hubble_folder = 'hubble_images'
     spacex_folder = 'spacex_images'
     instagram_folder = 'instagram_images'
-    image_name_for_hubble = 'hubble'
-    image_name_for_spacex = 'spacex'
+    hubble_image_name = 'hubble'
+    spacex_image_name = 'spacex'
 
     Path(spacex_folder).mkdir(parents=True, exist_ok=True)
-    url_images_spacex = fetch_spacex_last_launch(spacex_url)
-    download_image(url_images_spacex, spacex_folder, image_name_for_spacex)
+    spacex_images_url = fetch_spacex_last_launch(spacex_url)
+    download_image(spacex_images_url, spacex_folder, spacex_image_name)
 
 
     Path(hubble_folder).mkdir(parents=True, exist_ok=True)
-    news_id_hubble = fetch_news_id_hubble(hubble_url)
-    url_image_hubble = get_url_image_hubble(news_id_hubble)
-    download_image(url_image_hubble, hubble_folder, image_name_for_hubble)
+    hubble_news_id = fetch_news_id_hubble(hubble_url)
+    hubble_images_url = get_hubble_image_url(hubble_news_id)
+    download_image(hubble_images_url, hubble_folder, hubble_image_name)
 
     Path(instagram_folder).mkdir(parents=True, exist_ok=True)
     folders = [spacex_folder, hubble_folder]
     resiz_image(folders, instagram_folder)
 
-    publication_photo_instagram(login_instagram, password_instagram, instagram_folder)
+    publication_photo_instagram(instagram_login, instagram_password, instagram_folder)
