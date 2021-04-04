@@ -15,7 +15,7 @@ def fetch_spacex_last_launch(url):
     fly_lib = response.json()
     images_url = []
 
-    #search last run with photo
+    # search last run with photo
     flight_number = -1
     while bool(images_url) != True:
         images_url = fly_lib[flight_number]['links']['flickr']['original']
@@ -47,11 +47,11 @@ def change_url(image_url, protocol):
     return new_image_url
 
 
-def safe_image (image_url, folder, image_name, image_number):
+def safe_image(image_url, folder, image_name, image_number):
     protocols = image_url.split('//')
     protocol = protocols[0]
     image_url = change_url(image_url, protocol)
-    [root_url, image_format] = os.path.splitext(image_url)
+    root_url, image_format = os.path.splitext(image_url)
     file_name = f'{folder}/{image_name}-{image_number}.{image_format}'
     response = requests.get(image_url, verify=False)
     response.raise_for_status()
@@ -60,7 +60,7 @@ def safe_image (image_url, folder, image_name, image_number):
 
 
 def download_image(image_urls, folder, image_name):
-    if type (image_urls) == str:
+    if type(image_urls) == str:
         image_number = 0
         safe_image(image_urls, folder, image_name, image_number)
     else:
@@ -71,13 +71,14 @@ def download_image(image_urls, folder, image_name):
 def resiz_image(folders, folder_name):
     image_number = 1
     for path in folders:
-        for dir,folder,files in os.walk(path):
+        for directory, folder, files in os.walk(path):
             for image in files:
-                [image_name, image_format] = os.path.splitext(image)
-                new_image = Image.open(f'{dir}/{image}')
+                image_name, image_format = os.path.splitext(image)
+                new_image = Image.open(f'{directory}/{image}')
                 new_image = new_image.resize((1080, 1080))
-                new_image.save(f'{folder_name}/{image_number}-{image_name}.jpg',
-                               format='JPEG')
+                new_image.save(
+                    f'{folder_name}/{image_number}-{image_name}.jpg',
+                    format='JPEG')
                 image_number += 1
 
 
@@ -109,14 +110,16 @@ def create_pic_name(pic, folder_path):
     return description_file, pic_name
 
 
-def publication_photo_instagram (instagram_login, instagram_password, folder_name):
+def publication_photo_instagram(instagram_login, instagram_password,
+                                folder_name):
     posted_pics = check_pic_list()
 
     # timeout = 24 * 60 * 60  # pics will be posted every 24 hours
     timeout = 5
 
     bot = Bot()
-    bot.login(username=instagram_login, password=instagram_password, use_cookie=False)
+    bot.login(username=instagram_login, password=instagram_password,
+              use_cookie=False)
     while True:
         folder_path = folder_name
         pics = glob(folder_path + "/*.jpg")
@@ -125,7 +128,7 @@ def publication_photo_instagram (instagram_login, instagram_password, folder_nam
             for pic in pics:
                 if pic in posted_pics:
                     continue
-                [description_file, pic_name] = create_pic_name(pic, folder_path)
+                description_file, pic_name = create_pic_name(pic, folder_path)
                 caption = check_file_name(description_file, pic_name)
 
                 bot.upload_photo(pic, caption=caption)
@@ -164,7 +167,6 @@ if __name__ == '__main__':
     spacex_images_url = fetch_spacex_last_launch(spacex_url)
     download_image(spacex_images_url, spacex_folder, spacex_image_name)
 
-
     Path(hubble_folder).mkdir(parents=True, exist_ok=True)
     hubble_news_id = fetch_news_id_hubble(hubble_url)
     hubble_images_url = get_hubble_image_url(hubble_news_id)
@@ -174,4 +176,5 @@ if __name__ == '__main__':
     folders = [spacex_folder, hubble_folder]
     resiz_image(folders, instagram_folder)
 
-    publication_photo_instagram(instagram_login, instagram_password, instagram_folder)
+    publication_photo_instagram(instagram_login, instagram_password,
+                                instagram_folder)
