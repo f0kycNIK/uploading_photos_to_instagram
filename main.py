@@ -42,7 +42,7 @@ def get_hubble_image_url(news_id):
 def change_url(image_url, protocol):
     if protocol == 'https:':
         return image_url
-    new_image_url = 'https:' + image_url
+    new_image_url = f'https:{image_url}'
     return new_image_url
 
 
@@ -105,7 +105,7 @@ def create_pic_name(pic, folder_path):
 
     print("upload: " + pic_name)
 
-    description_file = folder_path + "/" + pic_name + ".txt"
+    description_file = f'{folder_path}/{pic_name}.txt'
     return description_file, pic_name
 
 
@@ -121,7 +121,7 @@ def publication_photo_instagram(instagram_login, instagram_password,
               use_cookie=False)
     while True:
         folder_path = folder_name
-        pics = glob(folder_path + "/*.jpg")
+        pics = glob(f'{folder_path}/*.jpg')
         pics = sorted(pics)
         try:
             for pic in pics:
@@ -139,7 +139,7 @@ def publication_photo_instagram(instagram_login, instagram_password,
                 if pic not in posted_pics:
                     posted_pics.append(pic)
                     with open("pics.txt", "a", encoding="utf8") as f:
-                        f.write(pic + "\n")
+                        f.write(f'{pic}\n')
 
                 time.sleep(timeout)
 
