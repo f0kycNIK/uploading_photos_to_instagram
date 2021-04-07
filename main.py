@@ -83,7 +83,7 @@ def resiz_image(folders, folder_name):
 
 def check_pic_list():
     try:
-        with open("pics.txt", "r", encoding="utf8") as f:
+        with open('pics.txt', 'r', encoding='utf8') as f:
             posted_pics = f.read().splitlines()
     except Exception:
         posted_pics = []
@@ -92,18 +92,18 @@ def check_pic_list():
 
 def check_file_name(description_file, pic_name):
     if os.path.isfile(description_file):
-        with open(description_file, "r") as file:
+        with open(description_file, 'r') as file:
             caption = file.read()
     else:
-        caption = pic_name.replace("-", " ")
+        caption = pic_name.replace('-', ' ')
     return caption
 
 
 def create_pic_name(pic, folder_path):
-    pic_name = pic[:-4].split("-")
-    pic_name = "-".join(pic_name[1:])
+    pic_name = pic[:-4].split('-')
+    pic_name = '-'.join(pic_name[1:])
 
-    print("upload: " + pic_name)
+    print('upload: ' + pic_name)
 
     description_file = f'{folder_path}/{pic_name}.txt'
     return description_file, pic_name
@@ -138,7 +138,7 @@ def publication_photo_instagram(instagram_login, instagram_password,
 
                 if pic not in posted_pics:
                     posted_pics.append(pic)
-                    with open("pics.txt", "a", encoding="utf8") as f:
+                    with open('pics.txt', 'a', encoding='utf8') as f:
                         f.write(f'{pic}\n')
 
                 time.sleep(timeout)
