@@ -40,7 +40,7 @@ def get_hubble_image_url(news_id):
     return image_url
 
 
-def change_url(image_url, protocol):
+def add_protocol_to_url(image_url, protocol):
     if protocol == 'https':
         return image_url
     new_image_url = f'https:{image_url}'
@@ -50,7 +50,7 @@ def change_url(image_url, protocol):
 def save_image(image_url, folder, image_name, image_number):
     protocols = urlparse(image_url)
     protocol = protocols.scheme
-    image_url = change_url(image_url, protocol)
+    image_url = add_protocol_to_url(image_url, protocol)
     root_url, image_format = os.path.splitext(image_url)
     file_name = f'{folder}/{image_name}-{image_number}.{image_format}'
     response = requests.get(image_url, verify=False)
@@ -82,7 +82,7 @@ def resize_image(folders, folder_name):
                 image_number += 1
 
 
-def check_pic_list():
+def open_pics_list():
     try:
         with open('pics.txt', 'r', encoding='utf8') as f:
             posted_pics = f.read().splitlines()
@@ -91,7 +91,7 @@ def check_pic_list():
     return posted_pics
 
 
-def check_file_name(description_file, pic_name):
+def get_caption(description_file, pic_name):
     if os.path.isfile(description_file):
         with open(description_file, 'r') as file:
             caption = file.read()
@@ -112,7 +112,7 @@ def create_pic_name(pic, folder_path):
 
 def publication_photo_instagram(instagram_login, instagram_password,
                                 folder_name):
-    posted_pics = check_pic_list()
+    posted_pics = open_pics_list()
 
     # timeout = 24 * 60 * 60  # pics will be posted every 24 hours
     timeout = 5
@@ -129,7 +129,7 @@ def publication_photo_instagram(instagram_login, instagram_password,
                 if pic in posted_pics:
                     continue
                 description_file, pic_name = create_pic_name(pic, folder_path)
-                caption = check_file_name(description_file, pic_name)
+                caption = get_caption(description_file, pic_name)
 
                 bot.upload_photo(pic, caption=caption)
 
