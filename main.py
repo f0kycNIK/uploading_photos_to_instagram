@@ -46,7 +46,7 @@ def change_url(image_url, protocol):
     return new_image_url
 
 
-def safe_image(image_url, folder, image_name, image_number):
+def save_image(image_url, folder, image_name, image_number):
     protocols = image_url.split('//')
     protocol = protocols[0]
     image_url = change_url(image_url, protocol)
@@ -61,13 +61,13 @@ def safe_image(image_url, folder, image_name, image_number):
 def download_image(image_urls, folder, image_name):
     if type(image_urls) == str:
         image_number = 0
-        safe_image(image_urls, folder, image_name, image_number)
+        save_image(image_urls, folder, image_name, image_number)
     else:
         for image_number, image_url in enumerate(image_urls):
-            safe_image(image_url, folder, image_name, image_number)
+            save_image(image_url, folder, image_name, image_number)
 
 
-def resiz_image(folders, folder_name):
+def resize_image(folders, folder_name):
     image_number = 1
     for path in folders:
         for directory, folder, files in os.walk(path):
@@ -173,7 +173,7 @@ if __name__ == '__main__':
 
     Path(instagram_folder).mkdir(parents=True, exist_ok=True)
     folders = [spacex_folder, hubble_folder]
-    resiz_image(folders, instagram_folder)
+    resize_image(folders, instagram_folder)
 
     publication_photo_instagram(instagram_login, instagram_password,
                                 instagram_folder)
