@@ -36,11 +36,11 @@ def get_hubble_image_url(news_id):
     response.raise_for_status()
     fly_lib = response.json()
     image_url = fly_lib['image_files'][0]['file_url']
-    return (image_url)
+    return image_url
 
 
 def change_url(image_url, protocol):
-    if not protocol != 'https:':
+    if protocol == 'https:':
         return image_url
     new_image_url = 'https:' + image_url
     return new_image_url
