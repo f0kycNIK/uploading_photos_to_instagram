@@ -7,6 +7,7 @@ from PIL import Image
 from pathlib import Path
 from dotenv import load_dotenv
 from instabot import Bot
+from urllib.parse import urlparse
 
 
 def fetch_spacex_last_launch(url):
@@ -40,15 +41,15 @@ def get_hubble_image_url(news_id):
 
 
 def change_url(image_url, protocol):
-    if protocol == 'https:':
+    if protocol == 'https':
         return image_url
     new_image_url = f'https:{image_url}'
     return new_image_url
 
 
 def save_image(image_url, folder, image_name, image_number):
-    protocols = image_url.split('//')
-    protocol = protocols[0]
+    protocols = urlparse(image_url)
+    protocol = protocols.scheme
     image_url = change_url(image_url, protocol)
     root_url, image_format = os.path.splitext(image_url)
     file_name = f'{folder}/{image_name}-{image_number}.{image_format}'
