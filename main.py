@@ -6,7 +6,6 @@ import requests
 from PIL import Image
 from pathlib import Path
 from dotenv import load_dotenv
-from io import open
 from instabot import Bot
 
 
