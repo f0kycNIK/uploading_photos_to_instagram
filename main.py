@@ -62,10 +62,9 @@ def save_image(image_url, folder, image_name, image_number):
 def download_image(image_urls, folder, image_name):
     if type(image_urls) == str:
         image_number = 0
-        save_image(image_urls, folder, image_name, image_number)
-    else:
-        for image_number, image_url in enumerate(image_urls):
-            save_image(image_url, folder, image_name, image_number)
+        return save_image(image_urls, folder, image_name, image_number)
+    for image_number, image_url in enumerate(image_urls):
+        save_image(image_url, folder, image_name, image_number)
 
 
 def resize_image(folders, folder_name):
@@ -176,5 +175,5 @@ if __name__ == '__main__':
     folders = [spacex_folder, hubble_folder]
     resize_image(folders, instagram_folder)
 
-    publication_photo_instagram(instagram_login, instagram_password,
-                                instagram_folder)
+    # publication_photo_instagram(instagram_login, instagram_password,
+    #                             instagram_folder)
