@@ -69,12 +69,13 @@ def download_image(image_urls, folder, image_name):
 
 def resize_image(folders, folder_name):
     image_number = 1
+    image_size = (1080, 1080)
     for path in folders:
         for directory, folder, files in os.walk(path):
             for image in files:
                 image_name, image_format = os.path.splitext(image)
                 new_image = Image.open(f'{directory}/{image}')
-                new_image = new_image.resize((1080, 1080))
+                new_image.thumbnail(image_size)
                 new_image.save(
                     f'{folder_name}/{image_number}-{image_name}.jpg',
                     format='JPEG')
@@ -175,5 +176,5 @@ if __name__ == '__main__':
     folders = [spacex_folder, hubble_folder]
     resize_image(folders, instagram_folder)
 
-    # publication_photo_instagram(instagram_login, instagram_password,
-    #                             instagram_folder)
+    publication_photo_instagram(instagram_login, instagram_password,
+                                instagram_folder)
