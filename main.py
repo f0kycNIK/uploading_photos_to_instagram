@@ -103,9 +103,6 @@ def get_caption(description_file, pic_name):
 def create_pic_name(pic, folder_path):
     pic_name = pic[:-4].split('-')
     pic_name = '-'.join(pic_name[1:])
-
-    print('upload: ' + pic_name)
-
     description_file = f'{folder_path}/{pic_name}.txt'
     return description_file, pic_name
 
@@ -134,8 +131,7 @@ def publication_photo_instagram(instagram_login, instagram_password,
                 bot.upload_photo(pic, caption=caption)
 
                 if bot.api.last_response.status_code != 200:
-                    print(bot.api.last_response)
-                    break
+                    raise requests.HTTPError(error_msg)
 
                 if pic not in posted_pics:
                     posted_pics.append(pic)
