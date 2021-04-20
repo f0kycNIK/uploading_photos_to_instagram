@@ -67,10 +67,10 @@ def download_image(image_urls, folder, image_name):
         save_image(image_url, folder, image_name, image_number)
 
 
-def resize_image(folders, folder_name):
+def resize_image(paths, folder_name):
     image_number = 1
     image_size = (1080, 1080)
-    for path in folders:
+    for path in paths:
         for directory, folder, files in os.walk(path):
             for image in files:
                 image_name, image_format = os.path.splitext(image)
@@ -86,7 +86,7 @@ def open_pics_list():
     try:
         with open('pics.txt', 'r', encoding='utf8') as f:
             posted_pics = f.read().splitlines()
-    except Exception:
+    except FileNotFoundError:
         posted_pics = []
     return posted_pics
 
@@ -117,10 +117,12 @@ def publication_photo_instagram(instagram_login, instagram_password,
     bot = Bot()
     bot.login(username=instagram_login, password=instagram_password,
               use_cookie=False)
+    print('step 10')
     while True:
         folder_path = folder_name
         pics = glob(f'{folder_path}/*.jpg')
         pics = sorted(pics)
+        print('шаг 1')
         try:
             for pic in pics:
                 if pic in posted_pics:
@@ -131,8 +133,8 @@ def publication_photo_instagram(instagram_login, instagram_password,
                 bot.upload_photo(pic, caption=caption)
 
                 if bot.api.last_response.status_code != 200:
-                    raise requests.HTTPError(error_msg)
-
+                    raise requests.HTTPError('нет доступа к Instagram')
+                print('шаг 2')
                 if pic not in posted_pics:
                     posted_pics.append(pic)
                     with open('pics.txt', 'a', encoding='utf8') as f:
@@ -141,7 +143,8 @@ def publication_photo_instagram(instagram_login, instagram_password,
                 time.sleep(timeout)
 
         except Exception as e:
-            print(str(e))
+            print(str(e), 'блок exception')
+            print('ошибка тут')
         time.sleep(60)
 
 
