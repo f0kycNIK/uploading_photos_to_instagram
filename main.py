@@ -4,10 +4,10 @@ from glob import glob
 import time
 import requests
 from PIL import Image
-from pathlib import Path
 from dotenv import load_dotenv
 from instabot import Bot
 from urllib.parse import urlparse
+
 
 
 def fetch_spacex_last_launch(url):
@@ -117,12 +117,10 @@ def publication_photo_instagram(instagram_login, instagram_password,
     bot = Bot()
     bot.login(username=instagram_login, password=instagram_password,
               use_cookie=False)
-    print('step 10')
     while True:
         folder_path = folder_name
         pics = glob(f'{folder_path}/*.jpg')
         pics = sorted(pics)
-        print('шаг 1')
         try:
             for pic in pics:
                 if pic in posted_pics:
@@ -134,7 +132,6 @@ def publication_photo_instagram(instagram_login, instagram_password,
 
                 if bot.api.last_response.status_code != 200:
                     raise requests.HTTPError('нет доступа к Instagram')
-                print('шаг 2')
                 if pic not in posted_pics:
                     posted_pics.append(pic)
                     with open('pics.txt', 'a', encoding='utf8') as f:
@@ -142,9 +139,8 @@ def publication_photo_instagram(instagram_login, instagram_password,
 
                 time.sleep(timeout)
 
-        except Exception as e:
-            print(str(e), 'блок exception')
-            print('ошибка тут')
+        except requests.HTTPError as exception:
+            print(exception)
         time.sleep(60)
 
 
@@ -175,5 +171,5 @@ if __name__ == '__main__':
     folders = [spacex_folder, hubble_folder]
     resize_image(folders, instagram_folder)
 
-    # publication_photo_instagram(instagram_login, instagram_password,
-    #                             instagram_folder)
+    publication_photo_instagram(instagram_login, instagram_password,
+                                instagram_folder)
