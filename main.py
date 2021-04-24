@@ -4,6 +4,7 @@ from glob import glob
 import time
 import requests
 from PIL import Image
+from pathlib import Path
 from dotenv import load_dotenv
 from instabot import Bot
 from urllib.parse import urlparse
