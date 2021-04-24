@@ -52,7 +52,7 @@ def save_image(image_url, folder, image_name, image_number):
     protocol = protocols.scheme
     image_url = add_protocol_to_url(image_url, protocol)
     root_url, image_format = os.path.splitext(image_url)
-    file_name = f'{folder}/{image_name}-{image_number}.{image_format}'
+    file_name = f'{folder}/{image_name}-{image_number}{image_format}'
     response = requests.get(image_url, verify=False)
     response.raise_for_status()
     with open(file_name, 'wb') as file:
@@ -175,5 +175,5 @@ if __name__ == '__main__':
     folders = [spacex_folder, hubble_folder]
     resize_image(folders, instagram_folder)
 
-    publication_photo_instagram(instagram_login, instagram_password,
-                                instagram_folder)
+    # publication_photo_instagram(instagram_login, instagram_password,
+    #                             instagram_folder)
