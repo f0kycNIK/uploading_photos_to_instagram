@@ -1,14 +1,14 @@
 import os
 import os.path
-from glob import glob
 import time
-import requests
-from PIL import Image
+from glob import glob
 from pathlib import Path
-from dotenv import load_dotenv
-from instabot import Bot
 from urllib.parse import urlparse
 
+import requests
+from dotenv import load_dotenv
+from instabot import Bot
+from PIL import Image
 
 
 def fetch_spacex_last_launch(url):
@@ -172,5 +172,5 @@ if __name__ == '__main__':
     folders = [spacex_folder, hubble_folder]
     resize_image(folders, instagram_folder)
 
-    publication_photo_instagram(instagram_login, instagram_password,
-                                instagram_folder)
+    # publication_photo_instagram(instagram_login, instagram_password,
+    #                             instagram_folder)
