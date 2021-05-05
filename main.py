@@ -52,8 +52,8 @@ def save_image(image_url, folder, image_name, image_number):
     parts_url = urlparse(image_url)
     protocol = parts_url.scheme
     image_url = add_protocol_to_url(image_url, protocol)
-    path_url = parts_url.path
-    root_url, image_format = os.path.splitext(path_url)
+    url_path = parts_url.path
+    root_url, image_format = os.path.splitext(url_path)
     file_name = f'{folder}/{image_name}-{image_number}{image_format}'
     print(file_name)
     response = requests.get(image_url, verify=False)
