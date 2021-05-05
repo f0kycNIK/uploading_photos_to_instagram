@@ -14,14 +14,14 @@ from PIL import Image
 def fetch_spacex_last_launch(url):
     response = requests.get(url)
     fly_lib = response.json()
-    images_url = []
+    image_urls = []
 
     # search last run with photo
     flight_number = -1
-    while not bool(images_url):
-        images_url = fly_lib[flight_number]['links']['flickr']['original']
+    while not bool(image_urls):
+        image_urls = fly_lib[flight_number]['links']['flickr']['original']
         flight_number -= 1
-    return images_url
+    return image_urls
 
 
 def fetch_news_id_hubble(url):
@@ -32,13 +32,13 @@ def fetch_news_id_hubble(url):
     return news_id
 
 
-def get_hubble_image_url(news_id):
+def get_hubble_image_urls(news_id):
     collection_url = f' http://hubblesite.org/api/v3/image/{news_id}'
     response = requests.get(collection_url)
     response.raise_for_status()
     fly_lib = response.json()
-    image_url = fly_lib['image_files'][0]['file_url']
-    return image_url
+    image_urls = fly_lib['image_files'][0]['file_url']
+    return image_urls
 
 
 def add_protocol_to_url(image_url, protocol):
@@ -60,7 +60,7 @@ def save_image(image_url, folder, image_name, image_number):
         file.write(response.content)
 
 
-def download_image(image_urls, folder, image_name):
+def download_images(image_urls, folder, image_name):
     if type(image_urls) == str:
         image_number = 0
         return save_image(image_urls, folder, image_name, image_number)
@@ -68,7 +68,7 @@ def download_image(image_urls, folder, image_name):
         save_image(image_url, folder, image_name, image_number)
 
 
-def resize_image(paths, folder_name):
+def resize_images(paths, folder_name):
     image_number = 1
     image_size = (1080, 1080)
     for path in paths:
@@ -159,17 +159,17 @@ if __name__ == '__main__':
     spacex_image_name = 'spacex'
 
     Path(spacex_folder).mkdir(parents=True, exist_ok=True)
-    spacex_images_url = fetch_spacex_last_launch(spacex_url)
-    download_image(spacex_images_url, spacex_folder, spacex_image_name)
+    spacex_image_urls = fetch_spacex_last_launch(spacex_url)
+    download_images(spacex_image_urls, spacex_folder, spacex_image_name)
 
     Path(hubble_folder).mkdir(parents=True, exist_ok=True)
     hubble_news_id = fetch_news_id_hubble(hubble_url)
-    hubble_images_url = get_hubble_image_url(hubble_news_id)
-    download_image(hubble_images_url, hubble_folder, hubble_image_name)
+    hubble_image_urls = get_hubble_image_urls(hubble_news_id)
+    download_images(hubble_image_urls, hubble_folder, hubble_image_name)
 
     Path(instagram_folder).mkdir(parents=True, exist_ok=True)
     folders = [spacex_folder, hubble_folder]
-    resize_image(folders, instagram_folder)
+    resize_images(folders, instagram_folder)
 
     upload_photo_instagram(instagram_login, instagram_password,
                            instagram_folder)
