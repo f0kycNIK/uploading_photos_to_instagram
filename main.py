@@ -108,8 +108,8 @@ def create_pic_name(pic, folder_path):
     return description_file, pic_name
 
 
-def publication_photo_instagram(instagram_login, instagram_password,
-                                folder_name):
+def upload_photo_instagram(instagram_login, instagram_password,
+                           folder_name):
     posted_pics = open_pics_list()
 
     # timeout = 24 * 60 * 60  # pics will be posted every 24 hours
@@ -171,5 +171,5 @@ if __name__ == '__main__':
     folders = [spacex_folder, hubble_folder]
     resize_image(folders, instagram_folder)
 
-    publication_photo_instagram(instagram_login, instagram_password,
-                                instagram_folder)
+    upload_photo_instagram(instagram_login, instagram_password,
+                           instagram_folder)
