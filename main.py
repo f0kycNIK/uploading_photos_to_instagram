@@ -49,11 +49,13 @@ def add_protocol_to_url(image_url, protocol):
 
 
 def save_image(image_url, folder, image_name, image_number):
-    protocols = urlparse(image_url)
-    protocol = protocols.scheme
+    parts_url = urlparse(image_url)
+    protocol = parts_url.scheme
     image_url = add_protocol_to_url(image_url, protocol)
-    root_url, image_format = os.path.splitext(image_url)
+    path_url = parts_url.path
+    root_url, image_format = os.path.splitext(path_url)
     file_name = f'{folder}/{image_name}-{image_number}{image_format}'
+    print(file_name)
     response = requests.get(image_url, verify=False)
     response.raise_for_status()
     with open(file_name, 'wb') as file:
