@@ -133,10 +133,9 @@ def publication_photo_instagram(instagram_login, instagram_password,
 
                 if bot.api.last_response.status_code != 200:
                     raise requests.HTTPError('нет доступа к Instagram')
-                if pic not in posted_pics:
-                    posted_pics.append(pic)
-                    with open('pics.txt', 'a', encoding='utf8') as f:
-                        f.write(f'{pic}\n')
+                posted_pics.append(pic)
+                with open('pics.txt', 'a', encoding='utf8') as f:
+                    f.write(f'{pic}\n')
 
                 time.sleep(timeout)
 
@@ -172,5 +171,5 @@ if __name__ == '__main__':
     folders = [spacex_folder, hubble_folder]
     resize_image(folders, instagram_folder)
 
-    # publication_photo_instagram(instagram_login, instagram_password,
-    #                             instagram_folder)
+    publication_photo_instagram(instagram_login, instagram_password,
+                                instagram_folder)
