@@ -55,7 +55,6 @@ def save_image(image_url, folder, image_name, image_number):
     url_path = parts_url.path
     root_url, image_format = os.path.splitext(url_path)
     file_name = f'{folder}/{image_name}-{image_number}{image_format}'
-    print(file_name)
     response = requests.get(image_url, verify=False)
     response.raise_for_status()
     with open(file_name, 'wb') as file:
