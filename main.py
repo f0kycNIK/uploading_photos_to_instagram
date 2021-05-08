@@ -1,5 +1,4 @@
 import os
-import os.path
 import time
 from glob import glob
 from pathlib import Path
